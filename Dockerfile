@@ -21,4 +21,5 @@ RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
 # install dronekit
 RUN pip3 install dronekit dronekit_sitl --user
 
+ADD missions missions
 ADD test.py test.py

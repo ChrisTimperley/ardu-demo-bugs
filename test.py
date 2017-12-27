@@ -3,6 +3,7 @@
 # Uses Dronekit to interact with the SITL (software-based simulator) and to
 # issue commands/missions to the rover.
 #
+import time
 import dronekit
 from typing import List
 from dronekit_sitl import SITL
@@ -25,7 +26,8 @@ def load_mission(fn: str) -> List[Command]:
     """
     cmds = []
     with open(fn, 'r') as f:
-        for line in f[1:]:
+        lines = [l.strip() for l in f]
+        for line in lines[1:]:
             cmd = parse_command(line)
             cmds.append(cmd)
     return cmds
@@ -46,11 +48,13 @@ def issue_mission(vehicle: Vehicle, commands: List[Command]) -> None:
 
 
 def execute_mission(fn: str) -> bool:
+    # TODO: allow 'binary' to be passed as an argument
+    binary = '/experiment/source/'
     mission = load_mission(fn)
-
+    vehicle = sitl = None
     try:
         sitl = SITL(binary)
-        vehicle = connect(sitl.connection_string(), wait_ready=True)
+        vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
         issue_mission(vehicle, mission)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
@@ -58,9 +62,17 @@ def execute_mission(fn: str) -> bool:
 
         # monitor the mission
         # could use "add_attribute_listener" to listen to next_waypoint attribute?
+        while True:
+            print("Global Location: {}".format(vehicle.location.global_frame))
+            time.sleep(2)
 
 
     finally:
         if vehicle:
             vehicle.close()
-        sitl.stop()
+        if sitl:
+            sitl.stop()
+
+
+if __name__ == '__main__':
+    execute_mission('missions/rover-broke.txt')
