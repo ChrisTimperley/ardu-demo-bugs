@@ -27,5 +27,11 @@ RUN sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
       --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-6
 
+# build
+RUN cd source && \
+    ./waf configure && \
+    ./waf configure && \
+    ./waf build -j$(nproc)
+
 ADD missions missions
 ADD test.py test.py
