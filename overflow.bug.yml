@@ -1,0 +1,23 @@
+bug: overflow
+program: ardupilot
+dataset: afrldemo
+languages:
+- c++
+
+build:
+  file: Dockerfile
+  tag: christimperley/afrldemo:overflow
+  type: docker
+
+compilation:
+  command: make -j$(nproc)
+  context: /experiment/src
+  time-limit: 300
+
+source-location: /experiment/src
+
+test-harness:
+  failing: 1
+  passing: 1
+  time-limit: 120
+  type: genprog
