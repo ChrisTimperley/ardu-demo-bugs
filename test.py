@@ -1,16 +1,17 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Uses Dronekit to interact with the SITL (software-based simulator) and to
 # issue commands/missions to the rover.
 #
+from __future__ import print_function
 import time
 import dronekit
-from typing import List
+import dronekit_sitl
 from dronekit_sitl import SITL
 from dronekit import Vehicle, Command, CommandSequence
 
 
-def parse_command(s: str) -> Command:
+def parse_command(s):
     """
     Parses a line from a mission file into its corresponding Command
     object in Dronekit.
@@ -19,7 +20,7 @@ def parse_command(s: str) -> Command:
     return Command(0, 0, *args)
 
 
-def load_mission(fn: str) -> List[Command]:
+def load_mission(fn):
     """
     Loads a mission from a given file and converts it into a list of
     Command objects.
@@ -33,7 +34,7 @@ def load_mission(fn: str) -> List[Command]:
     return cmds
 
 
-def issue_mission(vehicle: Vehicle, commands: List[Command]) -> None:
+def issue_mission(vehicle, commands):
     """
     Issues (but does not trigger) a mission, provided as a list of commands,
     to a given vehicle.
@@ -47,13 +48,14 @@ def issue_mission(vehicle: Vehicle, commands: List[Command]) -> None:
     vcmds.wait_ready()
 
 
-def execute_mission(fn: str) -> bool:
+def execute_mission(fn):
     # TODO: allow 'binary' to be passed as an argument
-    binary = '/experiment/source/'
+    binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
     vehicle = sitl = None
     try:
-        sitl = SITL(binary)
+        # sitl = SITL(binary)
+        sitl = dronekit_sitl.start_default()
         vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
         issue_mission(vehicle, mission)
 
