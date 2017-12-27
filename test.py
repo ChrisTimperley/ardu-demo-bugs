@@ -54,8 +54,8 @@ def execute_mission(fn):
     mission = load_mission(fn)
     vehicle = sitl = None
     try:
-        # sitl = SITL(binary)
-        sitl = dronekit_sitl.start_default()
+        sitl = SITL(binary)
+        sitl.launch([], verbose=False, await_ready=True, restart=True)
         vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
         issue_mission(vehicle, mission)
 
