@@ -9,9 +9,7 @@ RUN rm -rf /experiment/source && \
 RUN sudo add-apt-repository ppa:jonathonf/python-3.5 && \
     sudo apt-get update && \
     sudo apt-get install --no-install-recommends -y python3.5 \
-                                                    python3.5-dev && \
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.4 1 && \
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 2
+                                                    python3.5-dev
 
 # install pip for Python 3.5
 RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
@@ -20,6 +18,14 @@ RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
 
 # install dronekit
 RUN pip3 install dronekit dronekit_sitl --user
+
+# install gcc-6/g++-6 (required by newer versions of ArduPilot)
+RUN sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    sudo apt-get update && \
+    sudo apt-get install -y gcc-6 g++-6 && \
+    sudo update-alternatives \
+      --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-6
 
 ADD missions missions
 ADD test.py test.py
