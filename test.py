@@ -22,7 +22,16 @@ def parse_command(s):
     object in Dronekit.
     """
     args = [float(x) for x in s.split()]
-    return Command(0, 0, *args)
+    seq = 0             # API will automatically set sequence numbers
+    frame = args[2]
+    cmd_id = args[3]
+    current = 0         # not supported by dronekit
+    autocontinue = 0    # not supported by dronekit
+    (p1, p2, p3, p4, x, y, z) = args[4:11]
+
+    cmd = Command(0, 0, seq, frame, cmd_id, current, autocontinue, \
+                  p1, p2, p3, p4, x, y, z)
+    return cmd
 
 
 def load_mission(fn):
@@ -57,6 +66,7 @@ def execute_mission(fn):
     # TODO: allow 'binary' to be passed as an argument
     binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
+    return
     vehicle = sitl = None
     try:
         sitl = SITL(binary)
