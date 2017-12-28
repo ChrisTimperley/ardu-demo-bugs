@@ -64,13 +64,16 @@ def issue_mission(vehicle, commands):
 
 def execute_mission(fn):
     # TODO: allow 'binary' and 'speedup' to be passed as arguments
+    home = [40.071374969556928, -105.22978898137808, 1583.702759, 246]
     speedup = 10
     binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
     vehicle = sitl = None
     try:
+        home_arg = '--home={}'.format(','.join(map(str, home)))
+        print(home_arg)
         sitl = SITL(binary)
-        sitl.launch([],
+        sitl.launch([home_arg],
                     verbose=False,
                     await_ready=True,
                     restart=True,
@@ -99,4 +102,4 @@ def execute_mission(fn):
 
 
 if __name__ == '__main__':
-    execute_mission('missions/rover-broke.txt')
+    execute_mission('missions/rover-not-broke.txt')
