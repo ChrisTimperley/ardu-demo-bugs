@@ -4,6 +4,7 @@
 # issue commands/missions to the rover.
 #
 from __future__ import print_function
+import subprocess
 import time
 import dronekit
 import dronekit_sitl
@@ -22,14 +23,14 @@ def parse_command(s):
     object in Dronekit.
     """
     args = s.split()
-    seq = 0             # API will automatically set sequence numbers
-    frame = int(args[2])
-    cmd_id = int(args[3])
-    current = 0         # not supported by dronekit
-    autocontinue = 0    # not supported by dronekit
+    arg_index = int(args[0])
+    arg_currentwp = int(args[1])
+    arg_frame = int(args[2])
+    arg_cmd = int(args[3])
+    arg_autocontinue = 0 # not supported by dronekit
     (p1, p2, p3, p4, x, y, z) = [float(x) for x in args[4:11]]
 
-    cmd = Command(0, 0, seq, frame, cmd_id, current, autocontinue, \
+    cmd = Command(0, 0, 0, arg_frame, arg_cmd, arg_currentwp, arg_autocontinue,\
                   p1, p2, p3, p4, x, y, z)
     return cmd
 
@@ -70,18 +71,38 @@ def execute_mission(fn):
     mission = load_mission(fn)
     vehicle = sitl = None
     try:
+        model_arg = '--model=rover'
         home_arg = '--home={}'.format(','.join(map(str, home)))
-        print(home_arg)
+        defaults_arg = "--defaults=/experiment/source/Tools/autotest/default_params/rover.parm"
         sitl = SITL(binary)
-        sitl.launch([home_arg],
-                    verbose=False,
+        sitl.launch([home_arg, model_arg, defaults_arg],
+                    verbose=True,
                     await_ready=True,
-                    restart=True,
-                    speedup=speedup)
-        vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
+                    restart=False,
+                    speedup=1)
+
+
+        # launch mavproxy -- ports aren't being forwarded!
+        # sim_uri = sitl.connection_string()
+        # mavproxy_cmd = \
+        #     "mavproxy.py --console --master tcp:127.0.0.1:5760 --sitl 127.0.0.1:5501 --out localhost:14550 & /bin/bash"
+        # subprocess.call(mavproxy_cmd, shell=True)
+        # time.sleep(1)
+
+        # dronekit is broken! it always tries to connect to 127.0.0.1:5760
+        print("try to connect to vehicle...")
+        dronekit_connects_to = 'tcp:127.0.0.1:5760'
+        vehicle = dronekit.connect(dronekit_connects_to, wait_ready=True)
 
         while not vehicle.is_armable:
             time.sleep(0.2)
+
+        # arm the rover
+        vehicle.armed = True
+        while not vehicle.armed:
+            print("waiting for the rover to be armed...")
+            time.sleep(0.1)
+            vehicle.armed = True
 
         issue_mission(vehicle, mission)
 
