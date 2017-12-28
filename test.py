@@ -21,13 +21,13 @@ def parse_command(s):
     Parses a line from a mission file into its corresponding Command
     object in Dronekit.
     """
-    args = [float(x) for x in s.split()]
+    args = s.split()
     seq = 0             # API will automatically set sequence numbers
-    frame = args[2]
-    cmd_id = args[3]
+    frame = int(args[2])
+    cmd_id = int(args[3])
     current = 0         # not supported by dronekit
     autocontinue = 0    # not supported by dronekit
-    (p1, p2, p3, p4, x, y, z) = args[4:11]
+    (p1, p2, p3, p4, x, y, z) = [float(x) for x in args[4:11]]
 
     cmd = Command(0, 0, seq, frame, cmd_id, current, autocontinue, \
                   p1, p2, p3, p4, x, y, z)
@@ -58,7 +58,7 @@ def issue_mission(vehicle, commands):
     vcmds.clear()
     for command in commands:
         vcmds.add(command)
-    vcmds.download()
+    vcmds.upload()
     vcmds.wait_ready()
 
 
@@ -66,7 +66,6 @@ def execute_mission(fn):
     # TODO: allow 'binary' to be passed as an argument
     binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
-    return
     vehicle = sitl = None
     try:
         sitl = SITL(binary)
@@ -76,8 +75,7 @@ def execute_mission(fn):
         while not vehicle.is_armable:
             time.sleep(0.2)
 
-        # issue_mission(vehicle, mission)
-        adds_square_mission(vehicle, vehicle.location.global_frame, 50)
+        issue_mission(vehicle, mission)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
         vehicle.mode = VehicleMode("AUTO")
@@ -87,7 +85,6 @@ def execute_mission(fn):
         while True:
             print("Global Location: {}".format(vehicle.location.global_frame))
             time.sleep(2)
-
 
     finally:
         if vehicle:
