@@ -33,5 +33,8 @@ RUN cd source && \
     ./waf configure && \
     ./waf build -j$(nproc)
 
+# https://raw.githubusercontent.com/dronekit/dronekit-python/master/examples/vehicle_state/vehicle_state.py
+
 ADD missions missions
+ADD helper.py helper.py
 ADD test.py test.py

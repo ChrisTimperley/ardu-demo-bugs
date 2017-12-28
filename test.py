@@ -7,11 +7,13 @@ from __future__ import print_function
 import time
 import dronekit
 import dronekit_sitl
+from helper import adds_square_mission
 from dronekit_sitl import SITL
 from dronekit import Vehicle, \
                      VehicleMode, \
                      Command, \
-                     CommandSequence
+                     CommandSequence, \
+                     LocationGlobal
 
 
 def parse_command(s):
@@ -64,7 +66,8 @@ def execute_mission(fn):
         while not vehicle.is_armable:
             time.sleep(0.2)
 
-        issue_mission(vehicle, mission)
+        # issue_mission(vehicle, mission)
+        adds_square_mission(vehicle, vehicle.location.global_frame, 50)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
         vehicle.mode = VehicleMode("AUTO")
