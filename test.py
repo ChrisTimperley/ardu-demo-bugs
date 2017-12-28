@@ -63,13 +63,18 @@ def issue_mission(vehicle, commands):
 
 
 def execute_mission(fn):
-    # TODO: allow 'binary' to be passed as an argument
+    # TODO: allow 'binary' and 'speedup' to be passed as arguments
+    speedup = 10
     binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
     vehicle = sitl = None
     try:
         sitl = SITL(binary)
-        sitl.launch([], verbose=False, await_ready=True, restart=True)
+        sitl.launch([],
+                    verbose=False,
+                    await_ready=True,
+                    restart=True,
+                    speedup=speedup)
         vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
 
         while not vehicle.is_armable:
