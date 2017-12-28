@@ -8,7 +8,10 @@ import time
 import dronekit
 import dronekit_sitl
 from dronekit_sitl import SITL
-from dronekit import Vehicle, Command, CommandSequence
+from dronekit import Vehicle, \
+                     VehicleMode, \
+                     Command, \
+                     CommandSequence
 
 
 def parse_command(s):
@@ -60,7 +63,7 @@ def execute_mission(fn):
         issue_mission(vehicle, mission)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
-        vehicle.mode = dronekit.Mode("AUTO")
+        vehicle.mode = VehicleMode("AUTO")
 
         # monitor the mission
         # could use "add_attribute_listener" to listen to next_waypoint attribute?
