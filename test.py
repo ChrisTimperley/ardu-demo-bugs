@@ -60,6 +60,10 @@ def execute_mission(fn):
         sitl = SITL(binary)
         sitl.launch([], verbose=False, await_ready=True, restart=True)
         vehicle = dronekit.connect(sitl.connection_string(), wait_ready=True)
+
+        while not vehicle.is_armable:
+            time.sleep(0.2)
+
         issue_mission(vehicle, mission)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
