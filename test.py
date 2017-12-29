@@ -18,7 +18,21 @@ from dronekit import Vehicle, \
                      LocationGlobal
 
 
-MISSION_COMPLETE = False
+def snapshot(vehicle):
+    """
+    Produces a snapshot of the current state of the vehicle.
+    """
+    snap = {
+        'is_armable': vehicle.is_armable,
+        'armed': vehicle.armed,
+        'mode': vehicle.mode,
+        'groundspeed': vehicle.groundspeed,
+        'heading': vehicle.heading,
+        'lat': vehicle.location.global_frame.lat,
+        'lon': vehicle.location.global_frame.lon,
+        'alt': vehicle.location.global_frame.alt
+    }
+    return snap
 
 
 def parse_command(s):
@@ -114,16 +128,25 @@ def execute_mission(fn):
 
         # monitor the mission
         last_wp = vehicle.commands.count
-        @vehicle.on_message('MISSION_ITEM_REACHED')
+        mission_complete = [False]
+        waypoints_visited = []
+        snapshots = {}
+
         def on_waypoint(self, name, message):
-            global MISSION_COMPLETE
             wp = int(message.seq)
             print("Reached WP #{}".format(wp))
+
+            # record the (relevant) state of the vehicle
+            waypoints_visited.append(wp)
+            snapshots[wp] = snapshot(vehicle)
+
             if wp == last_wp:
-                MISSION_COMPLETE = True
+                mission_complete[0] = True
+        vehicle.add_message_listener('MISSION_ITEM_REACHED', on_waypoint)
+
 
         # wait until the last waypoint is reached or a time limit has expired
-        while not MISSION_COMPLETE:
+        while not mission_complete[0]:
             print("Global Location: {}".format(vehicle.location.global_frame))
             time.sleep(0.2)
 
