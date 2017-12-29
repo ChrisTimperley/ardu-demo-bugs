@@ -1,3 +1,5 @@
+version: '1.0'
+
 bug: overflow
 program: ardupilot
 dataset: afrldemo
@@ -10,11 +12,11 @@ build:
   type: docker
 
 compilation:
-  command: make -j$(nproc)
-  context: /experiment/src
+  command: ./waf build -j$(nproc)
+  context: /experiment/source
   time-limit: 300
 
-source-location: /experiment/src
+source-location: /experiment/source
 
 test-harness:
   failing: 1
