@@ -38,3 +38,4 @@ RUN cd source && \
 ADD missions missions
 ADD helper.py helper.py
 ADD test.py test.py
+ADD mission_runner.py mission_runner.py
