@@ -2,6 +2,7 @@
 from __future__ import print_function
 from sys import exit
 import math
+import sys
 from pprint import pprint as pp
 from helper import distance
 from mission_runner import load_mission, execute_mission
@@ -46,13 +47,26 @@ class TestCase(object):
 
 
 if __name__ == '__main__':
-    tests = [
-        TestCase('missions/rover-not-broke.txt',
-                 LocationGlobal(40.0713758, -105.2297839, 1583.67))
-    ]
+    # construct the test suite
+    tests = {
+        'p1': TestCase('missions/rover-not-broke.txt',
+                       LocationGlobal(40.0713758, -105.2297839, 1583.67)),
+        'n1': TestCase('missions/rover-broke.txt',
+                       LocationGlobal(40.0713758, -105.2297839, 1583.67))
+    }
+
+    # which test does the user wish to execute?
+    if len(sys.argv) != 2:
+        print("USAGE: ./test.py [test-id]")
+        exit(2)
+
+    test_id = sys.argv[1]
+    if test_id not in tests:
+        print("Unrecognised test identifier provided.")
+        exit(2)
 
     # execute the specified test
-    test = tests[0]
+    test = tests[test_id]
     (status, msg) = test.execute()
     if status:
         print("PASSED")
