@@ -4,7 +4,7 @@ bug: overflow
 program: ardupilot
 dataset: afrldemo
 languages:
-- c++
+- cpp
 
 build:
   file: Dockerfile
