@@ -19,7 +19,8 @@ compilation:
 source-location: /experiment/source
 
 test-harness:
+  type: genprog
+  time-limit: 120
   failing: 1
   passing: 1
-  time-limit: 120
-  type: genprog
+  command: ./test.py __ID__
