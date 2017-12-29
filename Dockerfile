@@ -19,13 +19,13 @@ RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
 # install dronekit
 RUN pip3 install dronekit dronekit_sitl --user
 
-# install gcc-6/g++-6 (required by newer versions of ArduPilot)
+# install gcc-5/g++-5 (required by newer versions of ArduPilot)
 RUN sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
     sudo apt-get update && \
-    sudo apt-get install -y gcc-6 g++-6 && \
+    sudo apt-get install -y gcc-5 g++-5 && \
     sudo update-alternatives \
-      --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 \
-      --slave /usr/bin/g++ g++ /usr/bin/g++-6
+      --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-5
 
 # build
 RUN cd source && \
