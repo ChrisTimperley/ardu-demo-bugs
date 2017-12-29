@@ -9,7 +9,6 @@ import subprocess
 import time
 import dronekit
 import dronekit_sitl
-from helper import adds_square_mission
 from pymavlink import mavutil
 from dronekit_sitl import SITL
 from dronekit import Vehicle, \
