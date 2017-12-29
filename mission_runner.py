@@ -80,12 +80,11 @@ def issue_mission(vehicle, commands):
     vcmds.wait_ready()
 
 
-def execute_mission(fn):
+def execute_mission(mission):
     # TODO: allow 'binary' and 'speedup' to be passed as arguments
     home = [40.071374969556928, -105.22978898137808, 1583.702759, 246]
     speedup = 1
     binary = '/experiment/source/build/sitl/bin/ardurover'
-    mission = load_mission(fn)
     vehicle = sitl = None
     try:
         model_arg = '--model=rover'
