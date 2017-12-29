@@ -9,6 +9,7 @@ import subprocess
 import time
 import dronekit
 import dronekit_sitl
+from timeit import default_timer as timer
 from pymavlink import mavutil
 from dronekit_sitl import SITL
 from dronekit import Vehicle, \
@@ -80,7 +81,7 @@ def issue_mission(vehicle, commands):
     vcmds.wait_ready()
 
 
-def execute_mission(mission):
+def execute_mission(mission, time_limit):
     # TODO: allow 'binary' and 'speedup' to be passed as arguments
     home = [40.071374969556928, -105.22978898137808, 1583.702759, 246]
     speedup = 1
@@ -110,9 +111,11 @@ def execute_mission(mission):
         dronekit_connects_to = 'tcp:127.0.0.1:5760'
         vehicle = dronekit.connect(dronekit_connects_to, wait_ready=True)
 
+        # TODO: add time limit
         while not vehicle.is_armable:
             time.sleep(0.2)
 
+        # TODO: add time limit
         # arm the rover
         vehicle.armed = True
         while not vehicle.armed:
@@ -120,6 +123,7 @@ def execute_mission(mission):
             time.sleep(0.1)
             vehicle.armed = True
 
+        # TODO: add time limit
         issue_mission(vehicle, mission)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
@@ -130,26 +134,34 @@ def execute_mission(mission):
         mission_complete = [False]
         waypoints_visited = []
 
-        def on_waypoint(self, name, message):
-            wp = int(message.seq)
-            # print("Reached WP #{}".format(wp))
+        try:
+            def on_waypoint(self, name, message):
+                wp = int(message.seq)
+                # print("Reached WP #{}".format(wp))
 
-            # record the (relevant) state of the vehicle
-            waypoints_visited.append((wp, snapshot(vehicle)))
+                # record the (relevant) state of the vehicle
+                waypoints_visited.append((wp, snapshot(vehicle)))
 
-            if wp == last_wp:
-                mission_complete[0] = True
-        vehicle.add_message_listener('MISSION_ITEM_REACHED', on_waypoint)
-
-
-        # wait until the last waypoint is reached or a time limit has expired
-        while not mission_complete[0]:
-            # print("Global Location: {}".format(vehicle.location.global_frame))
-            time.sleep(0.2)
-
-        return waypoints_visited
+                if wp == last_wp:
+                    mission_complete[0] = True
+            vehicle.add_message_listener('MISSION_ITEM_REACHED', on_waypoint)
 
 
+            # wait until the last waypoint is reached or a time limit has expired
+            time_started = timer()
+            while not mission_complete[0]:
+                time_elapsed = timer() - time_started
+                if time_limit and time_elapsed > time_limit:
+                    return waypoints_visited[:]
+                time.sleep(0.2)
+
+            return waypoints_visited[:]
+
+        # remove the listener
+        finally:
+            vehicle.remove_message_listener('MISSION_ITEM_REACHED', on_waypoint)
+
+    # close the connection and shutdown the simulator
     finally:
         if vehicle:
             vehicle.close()

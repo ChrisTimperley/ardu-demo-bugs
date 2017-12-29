@@ -11,11 +11,16 @@ from dronekit import LocationGlobal
 
 class TestCase(object):
     # TODO: add time limit
-    def __init__(self, filename, end_pos):
+    def __init__(self, filename, time_limit, end_pos):
         assert isinstance(end_pos, LocationGlobal)
         self.__filename = filename
         self.__end_pos = end_pos
+        self.__time_limit = time_limit
         self.__mission = load_mission(filename)
+
+    @property
+    def time_limit(self):
+        return self.__time_limit
 
     @property
     def filename(self):
@@ -30,7 +35,8 @@ class TestCase(object):
         return self.__end_pos
 
     def execute(self):
-        trace = execute_mission(self.__mission)
+        trace = execute_mission(self.__mission,
+                                time_limit=self.time_limit)
         if len(trace) < 0:
             return (False, "failed to navigate to any waypoints")
 
@@ -49,9 +55,9 @@ class TestCase(object):
 if __name__ == '__main__':
     # construct the test suite
     tests = {
-        'p1': TestCase('missions/rover-not-broke.txt',
+        'p1': TestCase('missions/rover-not-broke.txt', 60,
                        LocationGlobal(40.0713758, -105.2297839, 1583.67)),
-        'n1': TestCase('missions/rover-broke.txt',
+        'n1': TestCase('missions/rover-broke.txt', 60,
                        LocationGlobal(40.0713758, -105.2297839, 1583.67))
     }
 
