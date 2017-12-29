@@ -1,0 +1,12 @@
+diff --git a/APMrover2/commands_logic.cpp b/APMrover2/commands_logic.cpp
+index a3252fa..9dae3c5 100644
+--- a/APMrover2/commands_logic.cpp
++++ b/APMrover2/commands_logic.cpp
+@@ -137,7 +137,6 @@ bool Rover::start_command(const AP_Mission::Mission_Command& cmd)
+         // attacker can thus use it to write off the end of a particular
+         // buffer in this buggy code.  
+ 
+-        memset((void*)kleach_ints+(cmd.p1*sizeof(int32_t)), 0x1, 1);
+ 
+         // imagine the attacker actually just needs to write into
+         // this buffer and writes off the end
