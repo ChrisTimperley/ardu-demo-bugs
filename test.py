@@ -9,12 +9,16 @@ import time
 import dronekit
 import dronekit_sitl
 from helper import adds_square_mission
+from pymavlink import mavutil
 from dronekit_sitl import SITL
 from dronekit import Vehicle, \
                      VehicleMode, \
                      Command, \
                      CommandSequence, \
                      LocationGlobal
+
+
+MISSION_COMPLETE = False
 
 
 def parse_command(s):
@@ -24,12 +28,11 @@ def parse_command(s):
     """
     args = s.split()
     arg_index = int(args[0])
-    arg_currentwp = int(args[1])
+    arg_currentwp = 0 #int(args[1])
     arg_frame = int(args[2])
     arg_cmd = int(args[3])
     arg_autocontinue = 0 # not supported by dronekit
     (p1, p2, p3, p4, x, y, z) = [float(x) for x in args[4:11]]
-
     cmd = Command(0, 0, 0, arg_frame, arg_cmd, arg_currentwp, arg_autocontinue,\
                   p1, p2, p3, p4, x, y, z)
     return cmd
@@ -66,7 +69,7 @@ def issue_mission(vehicle, commands):
 def execute_mission(fn):
     # TODO: allow 'binary' and 'speedup' to be passed as arguments
     home = [40.071374969556928, -105.22978898137808, 1583.702759, 246]
-    speedup = 10
+    speedup = 1
     binary = '/experiment/source/build/sitl/bin/ardurover'
     mission = load_mission(fn)
     vehicle = sitl = None
@@ -79,7 +82,7 @@ def execute_mission(fn):
                     verbose=True,
                     await_ready=True,
                     restart=False,
-                    speedup=1)
+                    speedup=speedup)
 
 
         # launch mavproxy -- ports aren't being forwarded!
@@ -110,10 +113,21 @@ def execute_mission(fn):
         vehicle.mode = VehicleMode("AUTO")
 
         # monitor the mission
-        # could use "add_attribute_listener" to listen to next_waypoint attribute?
-        while True:
+        last_wp = vehicle.commands.count
+        @vehicle.on_message('MISSION_ITEM_REACHED')
+        def on_waypoint(self, name, message):
+            global MISSION_COMPLETE
+            wp = int(message.seq)
+            print("Reached WP #{}".format(wp))
+            if wp == last_wp:
+                MISSION_COMPLETE = True
+
+        # wait until the last waypoint is reached or a time limit has expired
+        while not MISSION_COMPLETE:
             print("Global Location: {}".format(vehicle.location.global_frame))
-            time.sleep(2)
+            time.sleep(0.2)
+
+        print("MISSION COMPLETE")
 
     finally:
         if vehicle:
