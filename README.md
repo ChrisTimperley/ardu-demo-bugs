@@ -198,11 +198,14 @@ $ source bin/activate
 ### BugZoo
 
 Now that you're inside the virtual environment, you'll need to install the
-latest version of BugZoo from GitHub.
+latest version of BugZoo's `afrl` branch on GitHub.
 
 ```
 $ git clone https://github.com/squaresLab/BugZoo bugzoo
-$ (cd bugzoo && pip install . --upgrade)
+$ cd bugzoo
+$ git checkout afrl
+$ pip install . --upgrade
+$ cd ..
 ```
 
 After installing BugZoo, you can now register the bug for this demonstration
