@@ -16,9 +16,22 @@ Things that don't work:
     Have any of the other performers had success in obtaining coverage for the
     version of ArduPilot used for the demo?
     \
+    \
     For now, the repair tool simply treats all lines in the file as suspicious
     locations. (This decision actually alleviates another problem, discussed
     below.)
+* **The bug is extremely easy to fix:** Since the fault consists of several
+    injected lines of code, removing one or more of them can prevent the bug
+    from manifesting. To fix the bug, one simply needs to delete one of several
+    critical lines, or alternatively, to replace the contents of that line to
+    achieve the same effect.
+    \
+    \
+    This is a bit of a problem since an very easy bug makes it rather difficult
+    to demonstrate any sort of improvement in the repair process. To resolve this,
+    CT has made the fault localisation artificially worse, which increases the
+    expected number of candidate patch evaluations.
+* **Clang integration:**
 
 ## Installation
 
