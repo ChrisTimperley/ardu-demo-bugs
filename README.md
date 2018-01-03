@@ -2,6 +2,24 @@
 
 Could copy the description of the bug from Kevin's email?
 
+## Warnings
+
+Things that don't work:
+
+* **Coverage generation:** For some reason `gcov` produces erroneous coverage
+    information for the particular version of ArduPilot that we are using for
+    this demonstration. CT has used `gcov` successfully with previous versions
+    of ArduPilot but can't figure out why it's not working here. CT used
+    `waf` to configure the source code with the following flags:
+    `LDFLAGS='--coverage'`,
+    `CXXFLAGS='-Wno-error=maybe-uninitialized -fprofile-arcs -ftest-coverage'`.
+    Have any of the other performers had success in obtaining coverage for the
+    version of ArduPilot used for the demo?
+    \
+    For now, the repair tool simply treats all lines in the file as suspicious
+    locations. (This decision actually alleviates another problem, discussed
+    below.)
+
 ## Installation
 
 ### Virtual Environment
