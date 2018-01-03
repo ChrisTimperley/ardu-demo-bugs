@@ -31,6 +31,11 @@ to perform dynamic analyses (e.g., test generation).
 
 The rest of this document is structured as follows: x, y, z.
 
+## Demonstration (CMU)
+
+In this section, we briefly describe what technical accomplishments CMU wishes
+to exhibit as part of the demonstration.
+
 ## Warnings
 
 * **Coverage doesn't work:** For some reason `gcov` produces erroneous coverage
