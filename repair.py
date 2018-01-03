@@ -12,7 +12,7 @@ if __name__ == '__main__':
     bz = bugzoo.BugZoo()
     bug = bz.bugs["ardudemo:ardupilot:overflow"]
 
-    problem = Problem(bz.bugs[bug_id], in_files)
+    problem = Problem(bug, in_files)
 
     # Since we can't obtain coverage information for ArduPilot right now,
     # this isn't actually used.
