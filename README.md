@@ -165,6 +165,20 @@ $ (cd darjeeling && pip install . --upgrade)
 
 ## Usage
 
+Once all the of the prequisites have been installed, the repair can triggered by
+executing a single script, as shown below:
+
 ```
 $ bugzoo 
 ```
+
+Before executing the script, as shown above, ensure that you have correctly
+sourced the virtual environment that was constructed during the installation
+phase:
+
+```
+$ cd path-to-dir-containing-virtual-env
+$ source bin/activate
+```
+
+MODIFICATIONS
