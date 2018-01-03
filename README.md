@@ -57,7 +57,7 @@ reflection this might not be a complete surprise: ArduPilot was originally
 written for highly constrained embedded systems, and its simulator is a very
 rudimentary albeit effective one.
 
-On my 4-core, 8-thread laptop, I was able to run a rather astonishing *XXX*
+On CT's 4-core, 8-thread laptop, I was able to run a rather astonishing *XXX*
 patch evaluation threads in parallel. This improvement completely dominates
 our optimisations in terms of improvement, and so I think it deserves to be
 the focus of CMU's contribution.
@@ -70,7 +70,7 @@ the focus of CMU's contribution.
 * **How much faster is the repair process?** The speed-up is a factor of the
   number of parallel threads that one can reliably use on one's machine.
 * **Spinning up Docker containers sounds expensive. Is it?** Nope! It's
-  surprisingly fast on my machine at least (0.1--0.2 seconds). The time taken
+  surprisingly fast on CT's machine at least (0.1--0.2 seconds). The time taken
   to execute the mission dominates the run-time, although one could reduce this
   by tweaking the simulator speed-up (exposed in the test harness).
 * **What factors affect performance?** Disk speed and memory are the two
