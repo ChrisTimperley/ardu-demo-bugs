@@ -32,7 +32,10 @@ to perform dynamic analyses (e.g., test generation).
 ## Demonstration (CMU)
 
 In this section, we briefly describe what technical accomplishments CMU wishes
-to exhibit as part of the demonstration.
+to exhibit as part of the demonstration. The most important and obvious
+difference between the repair tooling that CMU previously demonstrated and the
+tooling that it intends to demonstrate for the upcoming meeting is its ability
+to safely perform the repair across a large number of threads.
 
 Answers to potential questions:
 
@@ -40,6 +43,9 @@ Answers to potential questions:
 * **How much faster is the repair process?**
 
 ## Warnings
+
+Below are a few caveats and warnings that apply to both the bug and the repair
+process.
 
 * **Coverage doesn't work:** For some reason `gcov` produces erroneous coverage
     information for the particular version of ArduPilot that we are using for
@@ -67,10 +73,16 @@ Answers to potential questions:
     CT has made the fault localisation artificially worse, which increases the
     expected number of candidate patch evaluations.
 * **The test suite is small:** Although the oracle appears to be quite robust,
-*   there are few test cases and so a number of potentially dangerous but
-*   nonetheless valid patches may be produced (e.g., replacement of a statement
+    there are few test cases and so a number of potentially dangerous but
+    nonetheless valid patches may be produced (e.g., replacement of a statement
     that is critical to triggering the bug, with one that silently introduces a
     new vulnerability).
+* **The repair tool isn't supposed to be open-source yet:** I've made most of
+    the repositories that host the repair tools public, but only so that other
+    performers may acquire and use them more easily. Some of them should not be
+    treated as public releases (e.g., Darjeeling). Nonetheless, if you have any
+    issues, don't hesitate to post to the issue tracker (suspected implementation
+    bugs) or to email CT (technical issues).
 * **Clang integration:**
 
 
