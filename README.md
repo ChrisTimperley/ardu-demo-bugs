@@ -62,8 +62,6 @@ patch evaluation threads in parallel. This improvement completely dominates
 our optimisations in terms of improvement, and so I think it deserves to be
 the focus of CMU's contribution.
 
-### Comparison to previous demonstration
-
 ### Answers to potential questions
 
 * **How is this different from the previous demonstration?** Besides being
@@ -134,8 +132,19 @@ process.
     treated as public releases (e.g., Darjeeling). Nonetheless, if you have any
     issues, don't hesitate to post to the issue tracker (suspected implementation
     bugs) or to email CT (technical issues).
-* **Clang integration:**
-
+* **Clang integration:** The software stack used by this demonstration does not
+    include Clang, meaning that it does not implement optimisations that are
+    afforded by static analysis (i.e., those originally implemented by AE). The
+    amount of work required to build an interface between our Clang-based
+    analyses is greater than CT first thought. Further, while the optimisations
+    achieve a reasonable reduction of the space of candidate patches, they are
+    not as pronounced as the introduction of parallelism -- those optimisations
+    also make the problem even easier, which makes it harder still to the
+    demonstrate the benefits of parallelism.
+    \
+    In the near term, we plan to combine Rooibos -- a powerful
+    language-independent source code rewriting engine -- with lightweight
+    static analysis modules with REST interfaces, built atop Clang.
 
 ## Internals
 
