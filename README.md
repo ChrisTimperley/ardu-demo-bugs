@@ -2,11 +2,28 @@
 
 Could copy the description of the bug from Kevin's email?
 
+```
+The mission plan is specified via the rover-broke.txt file, which is a
+list of mission items.  Each mission item contains an 'opcode' to
+distinguish the type of command it is as well as several parameters.
+For example, a mission item might say 'move to new position' and specify
+the desired GPS coordinates as a parameter.  We seed a defect that
+exploits an unsanitized input parameter.  The malicious user can specify
+a mission item whose parameter is used as an index into a buffer.  If
+that parameter is not clamped to the size of the buffer, the malicious
+user can overwrite the end of such a buffer.
+
+In commands_logic.cpp, line 140, there is a memset that uses the
+parameter of the mission item to write a single byte at the end of the
+kleach_ints array.  This array is right next to a fake flag in memory
+(called kleach_broken).  If kleach_broken is set, the mission halts.
+```
+
+## Test Harness
+
 ## Warnings
 
-Things that don't work:
-
-* **Coverage generation:** For some reason `gcov` produces erroneous coverage
+* **Coverage doesn't work:** For some reason `gcov` produces erroneous coverage
     information for the particular version of ArduPilot that we are using for
     this demonstration. CT has used `gcov` successfully with previous versions
     of ArduPilot but can't figure out why it's not working here. CT used
