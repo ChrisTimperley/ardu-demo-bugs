@@ -19,7 +19,16 @@ kleach_ints array.  This array is right next to a fake flag in memory
 (called kleach_broken).  If kleach_broken is set, the mission halts.
 ```
 
-## Test Harness
+## Test Suite
+
+The test suite for the bug is compromised of two tests, provided by Kevin
+Leach. Each test takes the form of a mission, written in the WQL waypoint
+language. The passing test, `rover.txt`, instructs the rover to navigate a
+circuit of waypoints. The failing test, `rover-broke.txt`, is similar, except
+that it contains a command that triggers the vulnerability, causing the rover
+to prematurely abort its mission.
+
+### Test Harness
 
 ## Warnings
 
