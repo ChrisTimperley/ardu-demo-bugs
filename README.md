@@ -61,6 +61,11 @@ to exhibit as part of the demonstration.
     to demonstrate any sort of improvement in the repair process. To resolve this,
     CT has made the fault localisation artificially worse, which increases the
     expected number of candidate patch evaluations.
+* **The test suite is small:** Although the oracle appears to be quite robust,
+*   there are few test cases and so a number of potentially dangerous but
+*   nonetheless valid patches may be produced (e.g., replacement of a statement
+    that is critical to triggering the bug, with one that silently introduces a
+    new vulnerability).
 * **Clang integration:**
 
 
