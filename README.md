@@ -34,6 +34,11 @@ to perform dynamic analyses (e.g., test generation).
 In this section, we briefly describe what technical accomplishments CMU wishes
 to exhibit as part of the demonstration.
 
+Answers to potential questions:
+
+* **How is this different from the previous demonstration?**
+* **How much faster is the repair process?**
+
 ## Warnings
 
 * **Coverage doesn't work:** For some reason `gcov` produces erroneous coverage
