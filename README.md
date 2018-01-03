@@ -69,8 +69,11 @@ to exhibit as part of the demonstration.
 * **Clang integration:**
 
 
-
 ## Internals
+
+Here we provide a few technical details about the bug and the implementation of
+its test suite. If anyone wants more technical information about any aspect of
+CMU's part of the demonstration, do let CT know.
 
 ### Test Suite
 
