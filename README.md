@@ -229,7 +229,7 @@ Once all the of the prequisites have been installed, the repair can triggered by
 executing a single script, as shown below:
 
 ```
-$ bugzoo 
+$ python repair.py
 ```
 
 Before executing the script, as shown above, ensure that you have correctly
@@ -241,4 +241,6 @@ $ cd path-to-dir-containing-virtual-env
 $ source bin/activate
 ```
 
-MODIFICATIONS
+The API for the technologies used in the repair stack should be fairly
+documented, and so it should be fairly simple to tweak the script and the source
+code to meet your ends.
