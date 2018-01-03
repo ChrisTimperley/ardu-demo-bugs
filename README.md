@@ -29,8 +29,6 @@ instructions are primarily intended for those that may wish to demonstrate the
 automated repair of the bug, they may also be of interest to others that wish
 to perform dynamic analyses (e.g., test generation).
 
-The rest of this document is structured as follows: x, y, z.
-
 ## Demonstration (CMU)
 
 In this section, we briefly describe what technical accomplishments CMU wishes
@@ -94,6 +92,10 @@ script will be absorbed into CMU's automated testing framework for robotics
 systems, "Houston".
 
 ## Installation
+
+Below we give instructions on how to prepare one's machine for the purposes of
+conducting the demonstration. If these instructions are incomplete or incorrect,
+please let CT know.
 
 ### Virtual Environment
 
