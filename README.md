@@ -35,7 +35,17 @@ In this section, we briefly describe what technical accomplishments CMU wishes
 to exhibit as part of the demonstration. The most important and obvious
 difference between the repair tooling that CMU previously demonstrated and the
 tooling that it intends to demonstrate for the upcoming meeting is its ability
-to safely perform the repair across a large number of threads.
+to safely perform the repair across a large number of threads. Attempting to
+execute two or more tests in parallel on a single machine can compromise
+idempotency and result in test case interference. As such, attempting to
+parallelise across tests is unsafe and unable to be applied in both the
+general case and in the case of ArduPilot. Instead, CMU's tooling, known as
+Darjeeling, uses BugZoo and Docker to safely parallelise the evaluation
+of multiple patches. With the proper configuration, Darjeeling can provision
+containers on both local and remote machines. In the future, there's a lot
+of promise in large-scale distributed evaluation, but in order to achieve that
+promise we need to make a few unexpected optimisations (for reasons explained
+below).
 
 Answers to potential questions:
 
