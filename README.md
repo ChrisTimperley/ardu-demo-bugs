@@ -64,9 +64,11 @@ the focus of CMU's contribution.
 
 ### Comparison to previous demonstration
 
-Answers to potential questions:
+### Answers to potential questions
 
-* **How is this different from the previous demonstration?**
+* **How is this different from the previous demonstration?** Besides being
+  based on an entirely different stack, our new system provides safe,
+  large-scale parallelism.
 * **How much faster is the repair process?** The speed-up is a factor of the
   number of parallel threads that one can reliably use on one's machine.
 * **Spinning up Docker containers sounds expensive. Is it?** Nope! It's
@@ -81,6 +83,15 @@ Answers to potential questions:
   but I've repeated the repair process several times and checked the pass/fail
   results of each patch -- they all seem to be above board. Perhaps I just got
   lucky? Let CT know if you obtain strange results.
+* **Why can't you distribute the repair process across multiple EC2
+  instances?** It's a little bit of a hassle, but we could. (Although, using
+  EC2 might open up a pandora's box of mysterious failure modes.) My bigger
+  technical concern is with Darjeeling's exclusive use of Python threads. Due
+  to the global interpreter lock, threads only execute on a single core (with
+  almost unrestricted shared access to the memory) on most implementations of
+  Python. As the threads to (utilised) cores ratio creeps up, the repair
+  process incurs more overhead. To alleviate the problem, CT needs to adapt
+  Darjeeling to make better use of Python's multiprocessing capabilities.
 
 ## Warnings
 
