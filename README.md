@@ -1,6 +1,10 @@
-# AFRL Demonstration
+# AFRL Demonstration Instructions
 
-Could copy the description of the bug from Kevin's email?
+This repository contains instructions for reproducing and repairing the bug
+that is to be used as part of a demonstration for the AFRL PI meeting on
+January 14th, 2018.
+
+Below is a description of the bug, taken from an email sent by Kevin Leach.
 
 ```
 The mission plan is specified via the rover-broke.txt file, which is a
@@ -19,29 +23,13 @@ kleach_ints array.  This array is right next to a fake flag in memory
 (called kleach_broken).  If kleach_broken is set, the mission halts.
 ```
 
-## Test Suite
+For the purposes of safely and reliably reproducing and fixing the bug, we
+use BugZoo to package it into the form of a Docker container. Although these
+instructions are primarily intended for those that may wish to demonstrate the
+automated repair of the bug, they may also be of interest to others that wish
+to perform dynamic analyses (e.g., test generation).
 
-The test suite for the bug is compromised of two tests, provided by Kevin
-Leach. Each test takes the form of a mission, written in the WQL waypoint
-language. The passing test, `rover.txt`, instructs the rover to navigate a
-circuit of waypoints. The failing test, `rover-broke.txt`, is similar, except
-that it contains a command that triggers the vulnerability, causing the rover
-to prematurely abort its mission.
-
-### Test Harness
-
-The test harness for the bug scenario is implemented by `test.py`, which relies
-on `mission_runner.py` and `helper.py`. `test.py` accepts the name of one of
-the two test cases in the standard GenProg format (i.e., `p1` and `n1`). The
-script then loads and parses the mission file associated with that script,
-before executing the mission and checking the mission outcome against an
-expected outcome. For now, the expected outcome is given by a GPS position; if
-the rover completes all of the waypoints and comes to rest within two metres
-of that position, it is considered to have passed the test.
-
-In the near future, the functionalities implemented by the mission execution
-script will be absorbed into CMU's automated testing framework for robotics
-systems, "Houston".
+The rest of this document is structured as follows: x, y, z.
 
 ## Warnings
 
@@ -71,6 +59,34 @@ systems, "Houston".
     CT has made the fault localisation artificially worse, which increases the
     expected number of candidate patch evaluations.
 * **Clang integration:**
+
+
+
+## Internals
+
+### Test Suite
+
+The test suite for the bug is compromised of two tests, provided by Kevin
+Leach. Each test takes the form of a mission, written in the WQL waypoint
+language. The passing test, `rover.txt`, instructs the rover to navigate a
+circuit of waypoints. The failing test, `rover-broke.txt`, is similar, except
+that it contains a command that triggers the vulnerability, causing the rover
+to prematurely abort its mission.
+
+#### Test Harness
+
+The test harness for the bug scenario is implemented by `test.py`, which relies
+on `mission_runner.py` and `helper.py`. `test.py` accepts the name of one of
+the two test cases in the standard GenProg format (i.e., `p1` and `n1`). The
+script then loads and parses the mission file associated with that script,
+before executing the mission and checking the mission outcome against an
+expected outcome. For now, the expected outcome is given by a GPS position; if
+the rover completes all of the waypoints and comes to rest within two metres
+of that position, it is considered to have passed the test.
+
+In the near future, the functionalities implemented by the mission execution
+script will be absorbed into CMU's automated testing framework for robotics
+systems, "Houston".
 
 ## Installation
 
