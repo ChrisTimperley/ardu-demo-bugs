@@ -37,10 +37,12 @@ $ bugzoo bug build ardudemo:ardupilot:overflow
 
 ### Darjeeling
 
-Darjeeling.
+Finally, let's install Darjeeling, the library responsible for orchestrating the
+automated repair process:
 
 ```
-
+$ git clone https://github.com/squaresLab/Darjeeling darjeeling
+$ (cd darjeeling && pip install . --upgrade)
 ```
 
 ## Usage
