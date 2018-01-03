@@ -35,22 +35,52 @@ In this section, we briefly describe what technical accomplishments CMU wishes
 to exhibit as part of the demonstration. The most important and obvious
 difference between the repair tooling that CMU previously demonstrated and the
 tooling that it intends to demonstrate for the upcoming meeting is its ability
-to safely perform the repair across a large number of threads. Attempting to
-execute two or more tests in parallel on a single machine can compromise
-idempotency and result in test case interference. As such, attempting to
-parallelise across tests is unsafe and unable to be applied in both the
-general case and in the case of ArduPilot. Instead, CMU's tooling, known as
-Darjeeling, uses BugZoo and Docker to safely parallelise the evaluation
+to safely perform the repair across a large number of threads.
+
+Attempting to execute two or more tests in parallel on a single machine can
+compromise idempotency and result in test case interference. As such,
+attempting to parallelise across tests is unsafe and unable to be applied in
+both the general case and in the case of ArduPilot. Instead, CMU's tooling,
+known as Darjeeling, uses BugZoo and Docker to safely parallelise the evaluation
 of multiple patches. With the proper configuration, Darjeeling can provision
 containers on both local and remote machines. In the future, there's a lot
 of promise in large-scale distributed evaluation, but in order to achieve that
 promise we need to make a few unexpected optimisations (for reasons explained
 below).
 
+For more typical repair scenarios (e.g., ManyBugs), one may reasonably hope to
+attain a factor of `n` speed-up, where `n` is equal to the number of threads
+available to the machine. ArduPilot is a much more interesting and promising
+case, however. Neither ArduPilot nor its SITL-based simulator consume many
+resources -- most of their time is spent idling. I suppose that upon further
+reflection this might not be a complete surprise: ArduPilot was originally
+written for highly constrained embedded systems, and its simulator is a very
+rudimentary albeit effective one.
+
+On my 4-core, 8-thread laptop, I was able to run a rather astonishing *XXX*
+patch evaluation threads in parallel. This improvement completely dominates
+our optimisations in terms of improvement, and so I think it deserves to be
+the focus of CMU's contribution.
+
+### Comparison to previous demonstration
+
 Answers to potential questions:
 
 * **How is this different from the previous demonstration?**
-* **How much faster is the repair process?**
+* **How much faster is the repair process?** The speed-up is a factor of the
+  number of parallel threads that one can reliably use on one's machine.
+* **Spinning up Docker containers sounds expensive. Is it?** Nope! It's
+  surprisingly fast on my machine at least (0.1--0.2 seconds). The time taken
+  to execute the mission dominates the run-time, although one could reduce this
+  by tweaking the simulator speed-up (exposed in the test harness).
+* **What factors affect performance?** Disk speed and memory are the two
+  biggest bottlenecks. For reference, I'm using a blisteringly fast NVME SSD
+  and 16GB of memory.
+* **Hey! What makes you so sure that running so many threads didn't mess
+  things up?** Without conducting an experiment, I can't really be too sure,
+  but I've repeated the repair process several times and checked the pass/fail
+  results of each patch -- they all seem to be above board. Perhaps I just got
+  lucky? Let CT know if you obtain strange results.
 
 ## Warnings
 
