@@ -30,6 +30,19 @@ to prematurely abort its mission.
 
 ### Test Harness
 
+The test harness for the bug scenario is implemented by `test.py`, which relies
+on `mission_runner.py` and `helper.py`. `test.py` accepts the name of one of
+the two test cases in the standard GenProg format (i.e., `p1` and `n1`). The
+script then loads and parses the mission file associated with that script,
+before executing the mission and checking the mission outcome against an
+expected outcome. For now, the expected outcome is given by a GPS position; if
+the rover completes all of the waypoints and comes to rest within two metres
+of that position, it is considered to have passed the test.
+
+In the near future, the functionalities implemented by the mission execution
+script will be absorbed into CMU's automated testing framework for robotics
+systems, "Houston".
+
 ## Warnings
 
 * **Coverage doesn't work:** For some reason `gcov` produces erroneous coverage
