@@ -41,6 +41,13 @@ class Mission(object):
         # a list of DroneKit (WPL) commands
         self.__commands = commands[:]
 
+    def __len__(self):
+        """
+        The length of the mission is given by the number of commands that it
+        contains.
+        """
+        return len(self.__commands)
+
     def issue(self, vehicle):
         """
         Issues (but does not trigger) a mission, provided as a list of commands,
@@ -54,11 +61,13 @@ class Mission(object):
         vcmds.upload()
         vcmds.wait_ready()
 
-    def execute(self, vehicle, attacker):
+    def execute(self, time_limit, vehicle, attacker):
         """
         Executes this mission on a given vehicle.
 
         Parameters:
+            time_limit: the number of seconds that the vehicle should be given
+                to finish executing the mission before aborting the mission.
             vehicle: the vehicle that should execute the mission.
             attacker: an optional attacker.
 
