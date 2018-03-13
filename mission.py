@@ -1,7 +1,7 @@
 from __future__ import printfunction
 from timeit import default_timer as timer
 
-from dronekit import Command, CommandSequence
+from dronekit import Command
 
 import helper
 
@@ -54,7 +54,21 @@ class Mission(object):
         vcmds.upload()
         vcmds.wait_ready()
 
-    def execute(self, vehicle):
+    def execute(self, vehicle, attacker):
+        """
+        Executes this mission on a given vehicle.
+
+        Parameters:
+            vehicle: the vehicle that should execute the mission.
+            attacker: an optional attacker.
+
+        Returns:
+            a sequence of tuples of the form (wp, state), where wp corresponds
+            to a given waypoint in the mission, and state describes the state
+            of the vehicle when it reached that waypoint. If an attacker is
+            provided, and an attack occurred, then an empty list is returned
+            (to indicate failure).
+        """
         # TODO: add time limit
         while not vehicle.is_armable:
             time.sleep(0.2)
@@ -92,10 +106,17 @@ class Mission(object):
             vehicle.add_message_listener('MISSION_ITEM_REACHED', on_waypoint)
 
 
-            # wait until the last waypoint is reached or a time limit has expired
+            # wait until the last waypoint is reached, the time limit has
+            # expired, or the attack was successful
             time_started = timer()
             while not mission_complete[0]:
                 time_elapsed = timer() - time_started
+
+                # TODO if the attack was successful, return an empty list of
+                # waypoints
+                if attacker and attacker.was_successful():
+                    return []
+
                 if time_limit and time_elapsed > time_limit:
                     return waypoints_visited[:]
                 time.sleep(0.2)
