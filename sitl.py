@@ -19,6 +19,17 @@ class SITL(object):
                               'build/sitl/bin',
                               self.__name_binary)
 
+        # TODO this needs to work
+        # launch mavproxy -- ports aren't being forwarded!
+        # sim_uri = sitl.connection_string()
+        # mavproxy_cmd = \
+        #     "mavproxy.py --console --master tcp:127.0.0.1:5760 --sitl 127.0.0.1:5501 --out localhost:14550 & /bin/bash"
+        # subprocess.call(mavproxy_cmd, shell=True)
+        # time.sleep(1)
+
+        # TODO allow home to be specified
+        home = [40.071374969556928, -105.22978898137808, 1583.702759, 246]
+
         # TODO parameters!
         args = [
             '--model={}'.format(self.__model),
