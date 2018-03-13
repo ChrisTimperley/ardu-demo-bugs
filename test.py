@@ -7,6 +7,7 @@ from __future__ import print_function
 import math
 import sys
 import os
+import configparser
 
 import dronekit
 
@@ -37,15 +38,19 @@ class TestCase(object):
         assert isinstance(end_pos, LocationGlobal)
         assert time_limit > 0
 
-        fn_cfg = "/experiment/config/scenario.cfg"
-
         self.__end_pos = end_pos
         self.__time_limit = 120 # FIXME should be passed in configuration file
-        self.__mission = mission.Mission.from_file("/experiment/missions/scenario.wpl")
-        self.__sitl = sitl.SITL.from_file(fn_cfg)
+
+        # load the config file for this scenario
+        self.__cfg = configparser.SafeConfigParser()
+        self.__cfg.read("/experiment/config/scenario.config.DEFAULT")
+        self.__cfg.read("/experiment/config/scenario.config")
+
+        self.__mission = mission.Mission.from_cfg("/experiment/missions/scenario.wpl")
+        self.__sitl = sitl.SITL.from_cfg(self.__cfg)
 
         if use_attacker:
-            self.__attacker = attacker.Attacker.from_file(fn_cfg)
+            self.__attacker = attacker.Attacker.from_cfg(self.__cfg)
         else:
             self.__attacker = None
 

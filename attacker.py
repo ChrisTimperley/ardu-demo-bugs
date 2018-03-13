@@ -1,19 +1,11 @@
 import subprocess
 import signal
 import socket
-import configparser
 import os
 import tempfile
 
 
 class Attacker(object):
-    @staticmethod
-    def from_file(fn):
-        config = configparser.SafeConfigParser()
-        config.read("/experiment/config/scenario.config.DEFAULT")
-        config.read("/experiment/config/scenario.config")
-        return Attacker.from_cfg(config)
-
     @staticmethod
     def from_cfg(cfg):
         return Attacker(script='attack.py',

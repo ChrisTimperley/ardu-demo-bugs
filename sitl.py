@@ -5,8 +5,10 @@ import dronekit_sitl
 
 
 class SITL(object):
-    # TODO: from_file
-    # TODO: from_cfg
+    def from_cfg(cfg):
+        raise NotImplementedError
+        return SITL(model=model,
+                    binary=binary)
 
     def __init__(model='rover', binary='ardurover'):
         self.__dir_base = '/experiment/source'
