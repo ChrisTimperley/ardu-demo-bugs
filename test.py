@@ -6,6 +6,7 @@
 from __future__ import print_function
 import math
 import sys
+import os
 
 import dronekit
 
@@ -16,7 +17,7 @@ import helper
 
 
 class TestCase(object):
-    def __init__(self, filename, time_limit, end_pos, use_attacker):
+    def __init__(self, end_pos, use_attacker):
         """
         Constructs a new test case.
 
@@ -35,18 +36,16 @@ class TestCase(object):
         """
         assert isinstance(end_pos, LocationGlobal)
         assert time_limit > 0
+
+        fn_cfg = "/experiment/config/scenario.cfg"
+
         self.__end_pos = end_pos
-        self.__time_limit = time_limit
-
-        # TODO use fixed filename
-        self.__mission = mission.Mission.from_file(filename)
-
-        # TODO load from a config file
-        self.__sitl = sitl.SITL(binary='ardurover',
-                                model='rover')
+        self.__time_limit = 120 # FIXME should be passed in configuration file
+        self.__mission = mission.Mission.from_file("/experiment/missions/scenario.wpl")
+        self.__sitl = sitl.SITL.from_file(fn_cfg)
 
         if use_attacker:
-            self.__attacker = attacker.Attacker(fn_cfg) # TODO
+            self.__attacker = attacker.Attacker.from_file(fn_cfg)
         else:
             self.__attacker = None
 
