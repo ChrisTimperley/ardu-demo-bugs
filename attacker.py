@@ -41,7 +41,13 @@ class Attacker(object):
         self.__radius = radius
         # FIXME I can't find any documentation or examples for this parameter.
         # The default value in START is -1.
-        self.__report = -1
+        # From looking at an example attack script, it would seem that this
+        # parameter specifies the number of seconds to wait before reporting an
+        # attack to the attack server. If set to -1, the attack won't be
+        # reported. Presuming that only successful attacks are reported (rather
+        # than all attempted attacks), then we probably want the timeout to be
+        # zero, since we want to prevent the attack.
+        self.__report = 0
 
         self.__fn_log = None
         self.__fn_mav = None
