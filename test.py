@@ -29,17 +29,26 @@ class TestCase(object):
                 completion of the test.
             use_attacker: a flag indicating whether this test case should
                 perform the attack.
+
+        TODO:
+            accept a scenario file
         """
         assert isinstance(end_pos, LocationGlobal)
         assert time_limit > 0
         self.__end_pos = end_pos
         self.__time_limit = time_limit
-        self.__attacker = ""
+
+        # TODO use fixed filename
         self.__mission = mission.Mission.from_file(filename)
+
         # TODO load from a config file
         self.__sitl = sitl.SITL(binary='ardurover',
                                 model='rover')
-        self.__attacker = # TODO
+
+        if use_attacker:
+            self.__attacker = attacker.Attacker(fn_cfg) # TODO
+        else:
+            self.__attacker = None
 
     @property
     def time_limit(self):
