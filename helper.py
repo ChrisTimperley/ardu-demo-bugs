@@ -2,6 +2,24 @@ import math
 from dronekit import LocationGlobal, Command
 from pymavlink import mavutil
 
+
+def snapshot(vehicle):
+    """
+    Produces a snapshot of the current state of the vehicle.
+    """
+    snap = {
+        'is_armable': vehicle.is_armable,
+        'armed': vehicle.armed,
+        'mode': vehicle.mode.name,
+        'groundspeed': vehicle.groundspeed,
+        'heading': vehicle.heading,
+        'lat': vehicle.location.global_frame.lat,
+        'lon': vehicle.location.global_frame.lon,
+        'alt': vehicle.location.global_frame.alt
+    }
+    return snap
+
+
 def distance(loc_x, loc_y):
     """
     Returns the ground distance in metres between two `LocationGlobal` or `LocationGlobalRelative` objects.
