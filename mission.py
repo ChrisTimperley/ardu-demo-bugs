@@ -1,0 +1,107 @@
+from __future__ import printfunction
+from timeit import default_timer as timer
+
+from dronekit import Command, CommandSequence
+
+import helper
+
+
+class Mission(object):
+    @staticmethod
+    def __parse_command(s):
+        """
+        Parses a line from a mission file into its corresponding Command
+        object in Dronekit.
+        """
+        args = s.split()
+        arg_index = int(args[0])
+        arg_currentwp = 0 #int(args[1])
+        arg_frame = int(args[2])
+        arg_cmd = int(args[3])
+        arg_autocontinue = 0 # not supported by dronekit
+        (p1, p2, p3, p4, x, y, z) = [float(x) for x in args[4:11]]
+        cmd = Command(0, 0, 0, arg_frame, arg_cmd, arg_currentwp, arg_autocontinue,\
+                      p1, p2, p3, p4, x, y, z)
+        return cmd
+
+    @staticmethod
+    def from_file(fn):
+        """
+        Loads a mission from a given WPL file.
+        """
+        cmds = []
+        with open(fn, 'r') as f:
+            lines = [l.strip() for l in f]
+            for line in lines[1:]:
+                cmd = Mission.__parse_command(line)
+                cmds.append(cmd)
+        return cmds
+
+    def __init__(self, commands):
+        # a list of DroneKit (WPL) commands
+        self.__commands = commands[:]
+
+    def issue(self, vehicle):
+        """
+        Issues (but does not trigger) a mission, provided as a list of commands,
+        to a given vehicle.
+        Blocks until the mission has been downloaded onto the vehicle.
+        """
+        vcmds = vehicle.commands
+        vcmds.clear()
+        for command in self.__commands:
+            vcmds.add(command)
+        vcmds.upload()
+        vcmds.wait_ready()
+
+    def execute(self, vehicle):
+        # TODO: add time limit
+        while not vehicle.is_armable:
+            time.sleep(0.2)
+
+        # TODO: add time limit
+        # arm the rover
+        vehicle.armed = True
+        while not vehicle.armed:
+            print("waiting for the vehicle to be armed...")
+            time.sleep(0.1)
+            vehicle.armed = True
+
+        # TODO: add time limit
+        self.issue(vehicle)
+
+        # trigger the mission by switching the vehicle's mode to "AUTO"
+        vehicle.mode = VehicleMode("AUTO")
+
+        # monitor the mission
+        last_wp = vehicle.commands.count
+        mission_complete = [False]
+        waypoints_visited = []
+
+        try:
+            def on_waypoint(self, name, message):
+                wp = int(message.seq)
+                # print("Reached WP #{}".format(wp))
+
+                # record the (relevant) state of the vehicle
+                snapshot = helper.snapshot(vehicle)
+                waypoints_visited.append((wp, snapshot))
+
+                if wp == last_wp:
+                    mission_complete[0] = True
+            vehicle.add_message_listener('MISSION_ITEM_REACHED', on_waypoint)
+
+
+            # wait until the last waypoint is reached or a time limit has expired
+            time_started = timer()
+            while not mission_complete[0]:
+                time_elapsed = timer() - time_started
+                if time_limit and time_elapsed > time_limit:
+                    return waypoints_visited[:]
+                time.sleep(0.2)
+
+            return waypoints_visited[:]
+
+        # remove the listener
+        finally:
+            vehicle.remove_message_listener('MISSION_ITEM_REACHED', on_waypoint)
