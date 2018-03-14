@@ -8,6 +8,7 @@ import tempfile
 class Attacker(object):
     @staticmethod
     def from_cfg(cfg):
+        # TODO: fucked
         return Attacker(script='attack.py',
                         flags=cfg.get('attack_flags', ''),
                         longtitude=float(cfg.get('longitude', 0.0)),
@@ -74,7 +75,7 @@ class Attacker(object):
         self.__connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__connection.connect(self.__url_sitl)
 
-    def kill(self):
+    def stop(self):
         # close connection
         self.__connection.write("EXIT\n")
         self.__connection.flush()
