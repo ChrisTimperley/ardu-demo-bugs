@@ -17,41 +17,37 @@ class SITL(object):
         return SITL(vehicle=vehicle,
                     home_lat=home_lat,
                     home_lon=home_lon,
+                    home_alt=home_alt,
                     home_heading=home_heading)
 
     def __init__(vehicle,
-                 model,
-                 binary,
                  home_lat,
                  home_lon,
                  home_alt,
                  home_heading):
+        binary_name = ({
+            'APMRover2': 'ardurover',
+            'ArduCopter': 'arducopter',
+            'ArduPlane': 'arduplane'
+        })[vehicle]
+
         self.__dir_base = '/experiment/source'
         self.__vehicle = vehicle
-        self.__model = model
         self.__process = None
         self.__home_loc = (home_lat, home_lon, home_alt, home_heading)
-        self.__binary = os.path.join(self.__dir_base, 'build/sitl/bin', binary)
+        self.__path_binary = os.path.join(self.__dir_base, 'build/sitl/bin', binary_name)
 
     def start(self):
         script_sim = os.path.join(self.__dir_base, 'Tools/autotest/sim_vehicle.py')
         cmd = [
             script_sim,
-            "-l",
-            "{},{},{},{}".format(*self.__home_loc),
-            "-v",
-            self.__vehicle,
+            "-l", "{},{},{},{}".format(*self.__home_loc),
+            "-v", self.__vehicle,
             "-w",
             "--no-rebuild "
-            "--ardu-dir ",
-            self.__dir_base,
-            "--ardu-binary",
-            self.__binary,
-            "--mavproxy-args=--state-basedir={}".format(
-                os.path.join(self.experiment_base, "run{}".format(
-                    self.run_count)))
+            "--ardu-dir ", self.__dir_base,
+            "--ardu-binary", self.__path_binary
         ]
-
         self.__process = subprocess.Popen(cmd,
                                           preexec_fn=os.setsid,
                                           stdout=subprocess.PIPE,
