@@ -21,7 +21,8 @@ class SITL(object):
                     home_alt=home_alt,
                     home_heading=home_heading)
 
-    def __init__(vehicle,
+    def __init__(self,
+                 vehicle,
                  home_lat,
                  home_lon,
                  home_alt,
