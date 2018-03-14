@@ -67,6 +67,10 @@ class TestCase(object):
         trace = []
         vehicle = None
         try:
+            # let's prep the attack server
+            if self.__attacker:
+                self.__attacker.prepare()
+
             self.__sitl.start()
 
             # connect to the vehicle
@@ -76,7 +80,6 @@ class TestCase(object):
             vehicle = dronekit.connect(dronekit_connects_to, wait_ready=True)
 
             # launch the attack, if enabled
-            # TODO how does this work?
             if self.__attacker:
                 self.__attacker.start()
 

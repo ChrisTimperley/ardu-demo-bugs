@@ -40,7 +40,7 @@ class Attacker(object):
         # reported. Presuming that only successful attacks are reported (rather
         # than all attempted attacks), then we probably want the timeout to be
         # zero, since we want to prevent the attack.
-        self.__report = 0
+        self.__report = -1 # FIXME
 
         self.__fn_log = None
         self.__fn_mav = None
@@ -48,7 +48,7 @@ class Attacker(object):
         self.__socket = None
         self.__process = None
 
-    def start(self):
+    def prepare(self):
         self.__fn_log = tempfile.NamedTemporaryFile()
         self.__fn_mav = tempfile.NamedTemporaryFile()
 
@@ -69,9 +69,10 @@ class Attacker(object):
 
         cmd.extend([self.__latitude, self.__longitude, self.__radius])
         cmd = [str(s) for s in cmd]
+        cmd = ' '.join(cmd)
 
         # launch server
-        print(' '.join(cmd))
+        print(cmd)
         self.__process = subprocess.Popen(cmd,
                                           shell=True,
                                           preexec_fn=os.setsid,
@@ -81,11 +82,11 @@ class Attacker(object):
         # connect
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        time.sleep(5) # TODO hacky?
-        self.__socket .connect(("127.0.0.1", self.__port))
+        time.sleep(2) # TODO hacky?
+        self.__socket .connect(("0.0.0.0", self.__port))
         self.__connection = self.__socket.makefile()
 
-        # fire it up!
+    def start(self):
         self.__connection.write("START\n")
         self.__connection.flush()
 
