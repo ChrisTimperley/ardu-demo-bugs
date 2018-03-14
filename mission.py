@@ -1,4 +1,4 @@
-from __future__ import printfunction
+from __future__ import print_function
 from timeit import default_timer as timer
 
 from dronekit import Command

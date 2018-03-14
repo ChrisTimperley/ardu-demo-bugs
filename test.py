@@ -41,7 +41,7 @@ class TestCase(object):
         self.__cfg.read("/experiment/config/scenario.config.DEFAULT")
         self.__cfg.read("/experiment/config/scenario.config")
 
-        self.__mission = mission.Mission.from_cfg("/experiment/mission.txt")
+        self.__mission = mission.Mission.from_file("/experiment/mission.txt")
         self.__sitl = sitl.SITL.from_cfg(self.__cfg)
 
         if use_attacker:
