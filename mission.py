@@ -35,7 +35,7 @@ class Mission(object):
             for line in lines[1:]:
                 cmd = Mission.__parse_command(line)
                 cmds.append(cmd)
-        return cmds
+        return Mission(cmds)
 
     def __init__(self, commands):
         # a list of DroneKit (WPL) commands
