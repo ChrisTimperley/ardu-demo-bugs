@@ -129,6 +129,9 @@ RUN cd source && \
     ./waf configure && \
     ./waf build -j$(nproc)
 
+# TODO: missing rsync
+RUN sudo apt-get install -y rsync
+
 # https://raw.githubusercontent.com/dronekit/dronekit-python/master/examples/vehicle_state/vehicle_state.py
 ADD missions missions
 ADD helper.py helper.py
