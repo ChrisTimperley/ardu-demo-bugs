@@ -2,6 +2,7 @@
 import subprocess
 import os
 import signal
+import configparser
 
 import dronekit_sitl
 
@@ -39,7 +40,8 @@ class SITL(object):
         self.__home_loc = (home_lat, home_lon, home_alt, home_heading)
         self.__path_binary = os.path.join(self.__dir_base, 'build/sitl/bin', binary_name)
 
-    def start(self):
+    @property
+    def command(self):
         script_sim = os.path.join(self.__dir_base, 'Tools/autotest/sim_vehicle.py')
         cmd = [
             script_sim,
@@ -47,10 +49,13 @@ class SITL(object):
             "-v", self.__vehicle,
             "-w",
             "--no-rebuild "
-            "--ardu-dir ", self.__dir_base,
-            "--ardu-binary", self.__path_binary
+            # "--ardu-dir ", self.__dir_base, # BAD: no longer supported
+            # "--ardu-binary", self.__path_binary # BAD: no longer supported
         ]
-        self.__process = subprocess.Popen(cmd,
+        return ' '.join(cmd)
+
+    def start(self):
+        self.__process = subprocess.Popen(self.command,
                                           preexec_fn=os.setsid,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.STDOUT)
@@ -58,3 +63,10 @@ class SITL(object):
     def stop(self):
         os.killpg(self.__process.pid, signal.SIGKILL)
         self.__process = None
+
+
+if __name__ == '__main__':
+    cfg = configparser.SafeConfigParser()
+    cfg.read('/experiment/config/scenario.cfg')
+    sitl = SITL.from_cfg(cfg)
+    print(sitl.command)
