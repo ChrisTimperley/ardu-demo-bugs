@@ -23,10 +23,6 @@ class TestCase(object):
         Constructs a new test case.
 
         Parameters:
-            filename: the location of the WPL file (i.e., mission file) for
-                this test case.
-            time_limit: the number of seconds that this test is allowed to
-                run without completing before it is considered to have failed.
             end_pos: the expected position of the vehicle following the
                 completion of the test.
             use_attacker: a flag indicating whether this test case should
@@ -46,35 +42,13 @@ class TestCase(object):
         self.__cfg.read("/experiment/config/scenario.config.DEFAULT")
         self.__cfg.read("/experiment/config/scenario.config")
 
-        self.__mission = mission.Mission.from_cfg("/experiment/missions/scenario.wpl")
+        self.__mission = mission.Mission.from_cfg("/experiment/mission.txt")
         self.__sitl = sitl.SITL.from_cfg(self.__cfg)
 
         if use_attacker:
             self.__attacker = attacker.Attacker.from_cfg(self.__cfg)
         else:
             self.__attacker = None
-
-    @property
-    def time_limit(self):
-        """
-        The number of seconds that this test case is allowed to run without
-        completing before it is considered to be a failure.
-        """
-        return self.__time_limit
-
-    @property
-    def mission(self):
-        """
-        The mission that should be executed by the vehicle during this test.
-        """
-        return self.__mission
-
-    @property
-    def end_pos(self):
-        """
-        The intended location of the vehicle after completing the mission.
-        """
-        return self.__end_pos
 
     def execute(self):
         """
@@ -129,10 +103,11 @@ class TestCase(object):
 
 if __name__ == '__main__':
     # construct the test suite
+    # TODO locations are borked
     tests = {
-        'p1': TestCase('missions/scenario.wpl', 60,
+        'p1': TestCase(use_attacker=False,
                        end_pos=dronekit.LocationGlobal(40.0713758, -105.2297839, 1583.67)),
-        'n1': TestCase('missions/scenario.wpl', 60,
+        'n1': TestCase(use_attacker=True,
                        end_pos=dronekit.LocationGlobal(40.0713758, -105.2297839, 1583.67))
     }
 
