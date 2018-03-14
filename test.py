@@ -61,13 +61,14 @@ class TestCase(object):
         """
         # sitl, vehicle, attacker
         trace = []
+        vehicle = None
         try:
             self.__sitl.start()
 
             # connect to the vehicle
             # dronekit is broken! it always tries to connect to 127.0.0.1:5760
             print("try to connect to vehicle...")
-            dronekit_connects_to = 'tcp:127.0.0.1:5760'
+            dronekit_connects_to = 'udp:0.0.0.0:14550'
             vehicle = dronekit.connect(dronekit_connects_to, wait_ready=True)
 
             # launch the attack, if enabled
