@@ -38,8 +38,8 @@ class TestCase(object):
 
         # load the config file for this scenario
         self.__cfg = configparser.SafeConfigParser()
-        self.__cfg.read("/experiment/config/scenario.config.DEFAULT")
-        self.__cfg.read("/experiment/config/scenario.config")
+        self.__cfg.read("/experiment/config/default.cfg")
+        self.__cfg.read("/experiment/config/scenario.cfg")
 
         self.__mission = mission.Mission.from_file("/experiment/mission.txt")
         self.__sitl = sitl.SITL.from_cfg(self.__cfg)
