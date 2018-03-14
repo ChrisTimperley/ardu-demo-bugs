@@ -49,6 +49,10 @@ class TestCase(object):
         else:
             self.__attacker = None
 
+    @property
+    def end_pos(self):
+        return self.__end_pos
+
     def execute(self):
         """
         Executes the test.
