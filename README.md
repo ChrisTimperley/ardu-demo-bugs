@@ -5,5 +5,5 @@ Provides the base Docker image for all START scenarios.
 ### Installation
 
 ```
-$ docker build -t afrl:base .
+$ docker build -t start:base .
 ```
