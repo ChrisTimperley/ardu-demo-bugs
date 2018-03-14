@@ -114,9 +114,9 @@ class Attacker(object):
         self.__fn_log = None
         self.__fn_mav = None
 
-    def was_attacked(self):
+    def was_successful(self):
         self.__connection.write("CHECK\n")
         self.__connection.flush()
 
         reply = self.__connection.readline().strip()
-        return "NO" not in msg
+        return "NO" not in reply
