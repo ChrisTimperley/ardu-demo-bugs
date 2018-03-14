@@ -1,11 +1,9 @@
-# AFRL Demonstration Instructions
+# START GenProg Docker
 
-Base Dockerfile:
+Provides the base Docker image for all START scenarios.
 
-* import default configuration file at `/experiment/config/default.cfg`
+### Installation
 
-Scenario Dockerfile:
-
-* import attack script at `/experiment/attack.py`
-* import scenario configuration file at `/experiment/config/scenario.cfg`
-* import mission file at `/experiment/missions/scenario.wpl`
+```
+$ docker build -t afrl:base .
+```

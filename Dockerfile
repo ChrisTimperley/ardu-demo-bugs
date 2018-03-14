@@ -132,8 +132,10 @@ RUN cd source && \
 # TODO: missing rsync
 RUN sudo apt-get install -y rsync
 
-# https://raw.githubusercontent.com/dronekit/dronekit-python/master/examples/vehicle_state/vehicle_state.py
 ADD missions missions
 ADD helper.py helper.py
 ADD test.py test.py
 ADD config /experiment/config
+ADD sitl.py /experiment/sitl.py
+ADD mission.py /experiment/mission.py
+ADD attacker.py /experiment/attacker.py
