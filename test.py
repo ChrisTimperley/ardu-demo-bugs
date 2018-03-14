@@ -32,7 +32,6 @@ class TestCase(object):
             accept a scenario file
         """
         assert isinstance(end_pos, dronekit.LocationGlobal)
-        assert time_limit > 0
 
         self.__end_pos = end_pos
         self.__time_limit = 120 # FIXME should be passed in configuration file
