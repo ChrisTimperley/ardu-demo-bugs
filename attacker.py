@@ -3,6 +3,7 @@ import signal
 import socket
 import os
 import tempfile
+import time
 
 
 class Attacker(object):
@@ -24,7 +25,7 @@ class Attacker(object):
                  radius,
                  url_sitl,
                  port):
-        self.__script = script
+        self.__script = "/experiment/attack.py" # script
         self.__url_sitl = url_sitl
         self.__port = port
         self.__script_flags = flags.strip()
@@ -44,27 +45,33 @@ class Attacker(object):
         self.__fn_log = None
         self.__fn_mav = None
         self.__connection = None
+        self.__socket = None
         self.__process = None
 
-    def prepare(self):
+    def start(self):
         self.__fn_log = tempfile.NamedTemporaryFile()
         self.__fn_mav = tempfile.NamedTemporaryFile()
 
         cmd = [
+            'python',
             self.__script,
             "--master=udp:{}".format(self.__url_sitl),
             "--baudrate=115200",
             "--port={}".format(self.__port),
             "--report-timeout={}".format(self.__report),
-            "--logfile={}".format(self.__fn_log),
-            "--mavlog={}".format(self.__fn_mav)
+            "--logfile={}".format(self.__fn_log.name),
+            "--mavlog={}".format(self.__fn_mav.name)
         ]
 
         if self.__script_flags != '':
             tokens = self.__script_flags.split(",")
             cmd.extend(tokens)
 
+        cmd.extend([self.__latitude, self.__longitude, self.__radius])
+        cmd = [str(s) for s in cmd]
+
         # launch server
+        print(' '.join(cmd))
         self.__process = subprocess.Popen(cmd,
                                           shell=True,
                                           preexec_fn=os.setsid,
@@ -72,8 +79,15 @@ class Attacker(object):
                                           stderr=subprocess.STDOUT)
 
         # connect
-        self.__connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__connection.connect(self.__url_sitl)
+        self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        time.sleep(5) # TODO hacky?
+        self.__socket .connect(("127.0.0.1", self.__port))
+        self.__connection = self.__socket.makefile()
+
+        # fire it up!
+        self.__connection.write("START\n")
+        self.__connection.flush()
 
     def stop(self):
         # close connection
@@ -82,6 +96,11 @@ class Attacker(object):
             self.__connection.flush()
             self.__connection.close()
             self.__connection = None
+
+        # close socket
+        if self.__socket:
+            self.__socket.close()
+            self.__socket = None
 
         # TODO why was there a timeout here?
 
@@ -93,10 +112,6 @@ class Attacker(object):
         # destroy temporary files
         self.__fn_log = None
         self.__fn_mav = None
-
-    def trigger(self):
-        self.__connection.write("START\n")
-        self.__connection.flush()
 
     def was_attacked(self):
         self.__connection.write("CHECK\n")
