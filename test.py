@@ -31,7 +31,7 @@ class TestCase(object):
         TODO:
             accept a scenario file
         """
-        assert isinstance(end_pos, LocationGlobal)
+        assert isinstance(end_pos, dronekit.LocationGlobal)
         assert time_limit > 0
 
         self.__end_pos = end_pos
@@ -76,7 +76,7 @@ class TestCase(object):
             if self.__attacker:
                 self.__attacker.start()
 
-            trace = self.__mission.execute(time_limit=self.time_limit,
+            trace = self.__mission.execute(time_limit=self.__time_limit,
                                            vehicle=vehicle,
                                            attacker=self.__attacker)
         finally:
@@ -93,7 +93,7 @@ class TestCase(object):
         if last_wp != len(self.__mission) - 1:
             return (False, "failed to reach last waypoint within time limit")
 
-        pos = LocationGlobal(snapshot['lat'], snapshot['lon'], snapshot['alt'])
+        pos = dronekit.LocationGlobal(snapshot['lat'], snapshot['lon'], snapshot['alt'])
         dist = helper.distance(self.end_pos, pos)
         if dist < 2.0:
             return (True, None)
