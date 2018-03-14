@@ -1,6 +1,8 @@
 # START GenProg Docker
 
-Provides the base Docker image for all START scenarios.
+Provides the base Docker image for all START scenarios. The Dockerfile is
+currently optimised to maximise caching and for debugging, rather than
+disk space.
 
 ### Installation
 
