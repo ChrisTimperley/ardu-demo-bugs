@@ -66,6 +66,7 @@ class Attacker(object):
 
         # launch server
         self.__process = subprocess.Popen(cmd,
+                                          shell=True,
                                           preexec_fn=os.setsid,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.STDOUT)
@@ -76,16 +77,18 @@ class Attacker(object):
 
     def stop(self):
         # close connection
-        self.__connection.write("EXIT\n")
-        self.__connection.flush()
-        self.__connection.close()
-        self.__connection = None
+        if self.__connection:
+            self.__connection.write("EXIT\n")
+            self.__connection.flush()
+            self.__connection.close()
+            self.__connection = None
 
         # TODO why was there a timeout here?
 
         # kill server
-        os.killpg(self.__process.pid, signal.SIGKILL)
-        self.__process = None
+        if self.__process:
+            os.killpg(self.__process.pid, signal.SIGKILL)
+            self.__process = None
 
         # destroy temporary files
         self.__fn_log = None
