@@ -10,7 +10,7 @@ class Attacker(object):
     def from_cfg(cfg):
         return Attacker(script='attack.py',
                         flags=cfg.get('Attack', 'script_flags'),
-                        longtitude=cfg.getfloat('Attack', 'longitude'),
+                        longitude=cfg.getfloat('Attack', 'longitude'),
                         latitude=cfg.getfloat('Attack', 'latitude'),
                         radius=cfg.getfloat('Attack', 'radius'),
                         port=16666, # we can just run the attack server on a fixed port
