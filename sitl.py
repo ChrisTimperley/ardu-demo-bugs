@@ -29,7 +29,7 @@ class SITL(object):
                  home_alt,
                  home_heading):
         binary_name = ({
-            'APMRover2': 'ardurover',
+            'APMrover2': 'ardurover',
             'ArduCopter': 'arducopter',
             'ArduPlane': 'arduplane'
         })[vehicle]
@@ -55,7 +55,9 @@ class SITL(object):
         return ' '.join(cmd)
 
     def start(self):
+        print(self.command)
         self.__process = subprocess.Popen(self.command,
+                                          shell=True,
                                           preexec_fn=os.setsid,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.STDOUT)
