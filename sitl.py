@@ -9,7 +9,7 @@ import dronekit_sitl
 class SITL(object):
     @staticmethod
     def from_cfg(cfg):
-        vehicle = cfg.get("Mission", "vehicle")
+        vehicle = cfg.get("General", "vehicle")
         home_lat = cfg.getfloat("Mission", "latitude")
         home_lon = cfg.getfloat("Mission", "longitude")
         home_alt = cfg.getfloat("Mission", "altitude")
