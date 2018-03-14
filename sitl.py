@@ -7,6 +7,7 @@ import dronekit_sitl
 
 
 class SITL(object):
+    @staticmethod
     def from_cfg(cfg):
         vehicle = cfg.get("Mission", "vehicle")
         home_lat = cfg.getfloat("Mission", "latitude")
