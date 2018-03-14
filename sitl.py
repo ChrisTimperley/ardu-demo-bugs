@@ -1,28 +1,20 @@
 # This script is responsible for launching and closing the SITL.
+import subprocess
 import os
+import signal
 
 import dronekit_sitl
 
 
 class SITL(object):
     def from_cfg(cfg):
-        # TODO which other vehicles do we need to support?
         vehicle = cfg.get("Mission", "vehicle")
-        if vehicle == 'APMRover2':
-            binary = 'ardurover'
-            model = 'rover'
-        elif vehicle == 'ArduCopter':
-            binary = 'arducopter'
-            model = 'copter'
-
         home_lat = cfg.getfloat("Mission", "latitude")
         home_lon = cfg.getfloat("Mission", "longitude")
         home_alt = cfg.getfloat("Mission", "altitude")
         home_heading = cfg.getfloat("Mission", "heading")
 
         return SITL(vehicle=vehicle,
-                    model=model,
-                    binary=binary,
                     home_lat=home_lat,
                     home_lon=home_lon,
                     home_heading=home_heading)
@@ -37,7 +29,7 @@ class SITL(object):
         self.__dir_base = '/experiment/source'
         self.__vehicle = vehicle
         self.__model = model
-        self.__simulator = None
+        self.__process = None
         self.__home_loc = (home_lat, home_lon, home_alt, home_heading)
         self.__binary = os.path.join(self.__dir_base, 'build/sitl/bin', binary)
 
@@ -60,19 +52,11 @@ class SITL(object):
                     self.run_count)))
         ]
 
-        # args_dronekit = [
-        #     '--model={}'.format(self.__model),
-        #     '--home={}'.format(','.join(map(str, self.__home_loc))),
-        #     '--defaults=/experiment/source/Tools/autotest/default_params/rover.parm' # TODO fix!
-        # ]
-        #
-        # sitl = dronekit_SITL.SITL(binary)
-        # sitl.launch(args_dronekit,
-        #             verbose=True,
-        #             await_ready=True,
-        #             restart=False,
-        #             speedup=speedup)
+        self.__process = subprocess.Popen(cmd,
+                                          preexec_fn=os.setsid,
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.STDOUT)
 
     def stop(self):
-        self.__simulator.close()
-        self.__simulator = None
+        os.killpg(self.__process.pid, signal.SIGKILL)
+        self.__process = None
