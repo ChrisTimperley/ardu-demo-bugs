@@ -61,7 +61,8 @@ class SITL(object):
                                           stderr=subprocess.STDOUT)
 
     def stop(self):
-        os.killpg(self.__process.pid, signal.SIGKILL)
+        if self.__process:
+            os.killpg(self.__process.pid, signal.SIGKILL)
         self.__process = None
 
 
