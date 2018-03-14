@@ -8,14 +8,13 @@ import tempfile
 class Attacker(object):
     @staticmethod
     def from_cfg(cfg):
-        # TODO: fucked
         return Attacker(script='attack.py',
-                        flags=cfg.get('attack_flags', ''),
-                        longtitude=float(cfg.get('longitude', 0.0)),
-                        latitude=float(cfg.get('latitude', 0.0)),
-                        radius=float(cfg.get('radius', 0.0)),
+                        flags=cfg.get('Attack', 'script_flags'),
+                        longtitude=cfg.getfloat('Mission', 'longitude'),
+                        latitude=cfg.getfloat('Mission', 'latitude'),
+                        radius=cfg.getfloat('Mission', 'radius'),
                         port=16666, # we can just run the attack server on a fixed port
-                        url_sitl='127.0.0.1:TODO') # the SITL should also be at a fixed URL
+                        url_sitl='127.0.0.1:14551') # FIXME the SITL should also be at a fixed URL
 
     def __init__(self,
                  script,
@@ -53,7 +52,7 @@ class Attacker(object):
 
         cmd = [
             self.__script,
-            "--master={}".format(self.__url_sitl),
+            "--master=udp:{}".format(self.__url_sitl),
             "--baudrate=115200",
             "--port={}".format(self.__port),
             "--report-timeout={}".format(self.__report),
