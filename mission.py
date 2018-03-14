@@ -1,5 +1,6 @@
 from __future__ import print_function
 from timeit import default_timer as timer
+import time
 
 from dronekit import Command
 
@@ -94,7 +95,7 @@ class Mission(object):
         self.issue(vehicle)
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
-        vehicle.mode = VehicleMode("AUTO")
+        vehicle.mode = dronekit.VehicleMode("AUTO")
 
         # monitor the mission
         last_wp = vehicle.commands.count
