@@ -132,6 +132,10 @@ RUN cd source && \
 # TODO: missing rsync
 RUN sudo apt-get install -y rsync
 
+# add fake Git credentials so that we can use waf
+RUN git config --global user.name start && \
+    git config --global user.email start
+
 ADD missions missions
 ADD helper.py helper.py
 ADD test.py test.py
