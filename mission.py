@@ -62,6 +62,22 @@ class Mission(object):
         vcmds.upload()
         vcmds.wait_ready()
 
+    def __start(self, vehicle):
+        message = vehicle.message_factory.command_long_encode(
+            0,  # target_system
+            0,  # target_component
+            300,  # MAV_CMD MISSION_START
+            0,  # confirmation
+            1,  # param 1 first mission item to run
+            len(self) + 1,  # param 2 final mission item to run
+            0,  # param 3 (empty)
+            0,  # param 4 (empty)
+            0,  # param 5 (empty)
+            0,  # param 6 (empty)
+            4,  # param 7 (empty)
+        )
+        vehicle.send_mavlink(message)
+
     def execute(self, time_limit, vehicle, attacker):
         """
         Executes this mission on a given vehicle.
@@ -96,6 +112,7 @@ class Mission(object):
 
         # trigger the mission by switching the vehicle's mode to "AUTO"
         vehicle.mode = VehicleMode("AUTO")
+        self.__start(vehicle)
 
         # monitor the mission
         last_wp = vehicle.commands.count
