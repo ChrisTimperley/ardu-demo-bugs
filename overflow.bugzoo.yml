@@ -1,0 +1,23 @@
+version: '1.0'
+
+blueprints:
+  - type: docker
+    tag: christimperley/afrldemo:overflow
+
+bugs:
+  - name: afrl:overflow
+    program: ardupilot
+    dataset: afrldemo
+    image: christimperley/afrldemo:overflow
+    source-location: /experiment/source
+    languages:
+    - cpp
+    compiler:
+      type: waf
+      time-limit: 120
+    test-harness:
+      type: genprog
+      time-limit: 120
+      failing: 1
+      passing: 1
+      command: ./test.py __ID__
