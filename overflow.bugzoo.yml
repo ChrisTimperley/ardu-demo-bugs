@@ -21,3 +21,8 @@ bugs:
       failing: 1
       passing: 1
       command: ./test.py __ID__
+    coverage:
+      files-to-instrument:
+        - APMrover2/APMrover2.cpp
+        - ArduCopter/ArduCopter.cpp
+        - ArduPlane/ArduPlane.cpp
